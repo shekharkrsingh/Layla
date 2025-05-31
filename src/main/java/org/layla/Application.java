@@ -18,7 +18,8 @@ public class Application {
 			// Get configuration from environment variables
 			String botToken = System.getenv("BOT_TOKEN");
 			String botUsername = System.getenv("BOT_USERNAME");
-			String ownerIdStr = System.getenv("BOT_OWNER_ID");
+			String ownerIdStr1 = System.getenv("BOT_OWNER_ID1");
+			String ownerIdStr2 = System.getenv("BOT_OWNER_ID2");
 
 			// Validate configuration
 			if (botToken == null || botToken.isEmpty()) {
@@ -27,20 +28,27 @@ public class Application {
 			if (botUsername == null || botUsername.isEmpty()) {
 				throw new IllegalArgumentException("BOT_USERNAME environment variable not set");
 			}
-			if (ownerIdStr == null || ownerIdStr.isEmpty()) {
-				throw new IllegalArgumentException("BOT_OWNER_ID environment variable not set");
+			if (ownerIdStr1 == null || ownerIdStr1.isEmpty()) {
+				throw new IllegalArgumentException("BOT_OWNER_ID1 environment variable not set");
+			}
+
+
+			if (ownerIdStr2 == null || ownerIdStr2.isEmpty()) {
+				throw new IllegalArgumentException("BOT_OWNER_ID2 environment variable not set");
 			}
 
 			// Parse owner ID
-			Long ownerId;
+			Long ownerId1;
+			Long ownerId2;
 			try {
-				ownerId = Long.parseLong(ownerIdStr.trim());
+				ownerId1 = Long.parseLong(ownerIdStr1.trim());
+				ownerId2 = Long.parseLong(ownerIdStr2.trim());
 			} catch (NumberFormatException e) {
 				throw new IllegalArgumentException("Invalid BOT_OWNER_ID format - must be numeric");
 			}
 
 			// Create and register bot
-			ModerationBot bot = new ModerationBot(botToken, botUsername, ownerId);
+			ModerationBot bot = new ModerationBot(botToken, botUsername, ownerId1, ownerId2);
 			botsApi.registerBot(bot);
 
 			System.out.println("Bot started successfully with username: " + botUsername);

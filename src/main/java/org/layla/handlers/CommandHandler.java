@@ -49,7 +49,7 @@ public class CommandHandler {
     }
 
     public boolean handleAllowGroupCommand(Long chatId, User sender) throws TelegramApiException {
-        if (sender.getId().equals(config.getOwnerId())) {
+        if (sender.getId().equals(config.getOwnerId1()) || sender.getId().equals(config.getOwnerId2())) {
             processAllowGroupCommand(chatId);
         } else {
             responseHandler.sendResponse(chatId,
@@ -63,7 +63,7 @@ public class CommandHandler {
         User sender = message.getFrom();
 
         // Check if user is admin in this group
-        if (isUserAdmin(chatId.toString(), sender.getId())) {
+        if (isUserAdmin(chatId.toString(), sender.getId()) || sender.getId().equals(config.getOwnerId1()) || sender.getId().equals(config.getOwnerId2())) {
             processRemoveGroupCommand(chatId);
             return true;
         } else {

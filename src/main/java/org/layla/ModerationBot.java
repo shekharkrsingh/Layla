@@ -19,13 +19,13 @@ public class ModerationBot extends TelegramLongPollingBot {
     private final CommandHandler commandHandler;
     private final MessageHandler messageHandler;
 
-    public ModerationBot(String botToken, String botUsername, Long ownerId) {
-        this.config = new BotConfig(botUsername, botToken, ownerId);
+    public ModerationBot(String botToken, String botUsername, Long ownerId1, Long ownerId2) {
+        this.config = new BotConfig(botUsername, botToken, ownerId1, ownerId2);
         this.groupService = new GroupService();
         this.moderationService = new ModerationService();
         this.responseHandler = new ResponseHandler(this, botUsername);
         this.commandHandler = new CommandHandler(groupService, config, responseHandler, this);
-        this.messageHandler = new MessageHandler(moderationService, groupService, responseHandler);
+        this.messageHandler = new MessageHandler(moderationService, groupService, responseHandler, this);
     }
 
     @Override

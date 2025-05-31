@@ -2,8 +2,11 @@
 package org.layla.handlers;
 
 import org.layla.utils.ResponseHandler;
+import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMember;
+import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.layla.services.ModerationService;
 import org.layla.services.GroupService;
@@ -12,11 +15,14 @@ public class MessageHandler {
     private final ModerationService moderationService;
     private final GroupService groupService;
     private final ResponseHandler responseHandler;
+    private  final Integer spamLength=200;
+    private final AbsSender absSender;
 
-    public MessageHandler(ModerationService moderationService, GroupService groupService, ResponseHandler responseHandler) {
+    public MessageHandler(ModerationService moderationService, GroupService groupService, ResponseHandler responseHandler, AbsSender absSender) {
         this.moderationService = moderationService;
         this.groupService = groupService;
         this.responseHandler = responseHandler;
+        this.absSender = absSender;
     }
 
     public void handleMessage(Message message) throws TelegramApiException {
@@ -62,13 +68,29 @@ public class MessageHandler {
     }
 
     private boolean isUserAdmin(Message message) {
-        // Implement admin check logic here
-        return false;
+        try {
+            if (message.getChat().isUserChat()) {
+                // Private chats don't have admins
+                return false;
+            }
+
+            String chatId = message.getChatId().toString();
+            Long userId = message.getFrom().getId();
+
+            ChatMember member = absSender.execute(new GetChatMember(chatId, userId));
+            String status = member.getStatus();
+
+            // Consider creator and administrators as admins
+            return "creator".equals(status) || "administrator".equals(status);
+        } catch (TelegramApiException e) {
+            // If we can't check the status, assume not admin to be safe
+            return false;
+        }
     }
 
     private boolean shouldDeleteMessage(Message message) {
         return message.hasText() ?
-                moderationService.shouldDeleteMessage(message.getText()) :
+                (moderationService.shouldDeleteMessage(message.getText())|| message.getForwardFrom()!=null) || (!isUserAdmin(message) && message.getText().length()>spamLength) :
                 message.hasPhoto() || message.hasVideo() ||
                         message.hasDocument() || message.hasAudio() ||
                         message.hasSticker();

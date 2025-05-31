@@ -1,9 +1,12 @@
 package org.layla.services;
 
+
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 
 public class ModerationService {
     private final Set<String> forbiddenKeywords = new HashSet<>();
@@ -39,7 +42,7 @@ public class ModerationService {
     public boolean shouldDeleteMessage(String text) {
         if (text == null) return false;
         String lowerText = text.toLowerCase();
-        return containsLink(lowerText) || forbiddenKeywords.stream().anyMatch(lowerText::contains);
+        return containsLink(lowerText) || forbiddenKeywords.stream().anyMatch(lowerText::contains) ;
     }
 
     private boolean containsLink(String text) {
