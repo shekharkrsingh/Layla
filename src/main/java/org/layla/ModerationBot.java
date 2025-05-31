@@ -1,6 +1,7 @@
 
 package org.layla;
 
+import org.layla.services.GroqService;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -18,14 +19,16 @@ public class ModerationBot extends TelegramLongPollingBot {
     private final ResponseHandler responseHandler;
     private final CommandHandler commandHandler;
     private final MessageHandler messageHandler;
+    private final GroqService groqService;
 
     public ModerationBot(String botToken, String botUsername, Long ownerId1, Long ownerId2) {
+        this.groqService = new GroqService();
         this.config = new BotConfig(botUsername, botToken, ownerId1, ownerId2);
         this.groupService = new GroupService();
         this.moderationService = new ModerationService();
         this.responseHandler = new ResponseHandler(this, botUsername);
         this.commandHandler = new CommandHandler(groupService, config, responseHandler, this);
-        this.messageHandler = new MessageHandler(moderationService, groupService, responseHandler, this);
+        this.messageHandler = new MessageHandler(moderationService, groupService, responseHandler, this , groqService);
     }
 
     @Override
@@ -48,7 +51,8 @@ public class ModerationBot extends TelegramLongPollingBot {
             }
 
             Long chatId = update.getMessage().getChatId();
-            if (chatId == null || !groupService.isGroupAllowed(chatId)) return;
+            String chatType= update.getMessage().getChat().getType();
+            if (chatId == null || (chatType.equals("group") && !groupService.isGroupAllowed(chatId))) return;
 
             messageHandler.handleMessage(update.getMessage());
         } catch (TelegramApiException e) {

@@ -1,7 +1,10 @@
 // handlers/MessageHandler.java
 package org.layla.handlers;
 
+import org.layla.models.BotConfig;
+import org.layla.services.GroqService;
 import org.layla.utils.ResponseHandler;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -17,12 +20,14 @@ public class MessageHandler {
     private final ResponseHandler responseHandler;
     private  final Integer spamLength=200;
     private final AbsSender absSender;
+    private final GroqService groqService;
 
-    public MessageHandler(ModerationService moderationService, GroupService groupService, ResponseHandler responseHandler, AbsSender absSender) {
+    public MessageHandler(ModerationService moderationService, GroupService groupService, ResponseHandler responseHandler, AbsSender absSender, GroqService groqService) {
         this.moderationService = moderationService;
         this.groupService = groupService;
         this.responseHandler = responseHandler;
         this.absSender = absSender;
+        this.groqService = groqService;
     }
 
     public void handleMessage(Message message) throws TelegramApiException {
@@ -31,6 +36,16 @@ public class MessageHandler {
         if (message.getNewChatMembers() != null && !message.getNewChatMembers().isEmpty()) {
             handleNewMembers(message);
             return;
+        }
+
+        String text=message.getText();
+        if (message.hasText() && (text.toLowerCase().contains("layla") || text.toLowerCase().contains("@"+responseHandler.getBotUsername()) || (message.getChat().getType().equals("private") && message.getReplyToMessage()== null))) {
+            handleLaylaResponse(message);
+        }
+
+        if(message.getReplyToMessage() != null && message.getReplyToMessage().getFrom().getUserName().equals(responseHandler.getBotUsername())){
+            String finalMessage= text+"\n Layla this is your previous message: "+message.getReplyToMessage().getText();
+            handleLaylaResponse(message, finalMessage);
         }
 
         if (shouldSkipMessage(message)) return;
@@ -86,6 +101,31 @@ public class MessageHandler {
             // If we can't check the status, assume not admin to be safe
             return false;
         }
+    }
+
+    private void handleLaylaResponse(Message message) {
+        groqService.getResponse(message.getText())
+                .thenAccept(response -> {
+                    if (response != null && !response.trim().isEmpty()) {
+                        try {
+                            responseHandler.sendResponse(message.getChatId(), response);
+                        } catch (TelegramApiException e) {
+                            System.err.println("Failed to send Layla response: " + e.getMessage());
+                        }
+                    }
+                });
+    }
+    private void handleLaylaResponse(Message message, String newText) {
+        groqService.getResponse(newText)
+                .thenAccept(response -> {
+                    if (response != null && !response.trim().isEmpty()) {
+                        try {
+                            responseHandler.sendResponse(message.getChatId(), response);
+                        } catch (TelegramApiException e) {
+                            System.err.println("Failed to send Layla response: " + e.getMessage());
+                        }
+                    }
+                });
     }
 
     private boolean shouldDeleteMessage(Message message) {

@@ -26,12 +26,28 @@ public class ModerationService {
                 "panties", "pornography", "prostitute", "pussy", "sexting", "shemale", "sodomy", "suck",
                 "threesome", "tits", "vibrator", "voyeur",
 
+
+                "allah", "tawhid", "shirk", "iman", "akhirah", "qadr", "qur'an", "quran", "hadith", "sunnah", "shahada",
+                "salah", "zakat", "sawm", "hajj", "wudu", "dua", "dhikr", "jumu'ah", "eid", "al-fitr", "alfitr", "eid al-adha",
+                "muhammad", "anbiya", "sharia", "halal", "haram", "ummah", "fitrah", "nafs", "jannah", "jahannam",
+                "ijtihad", "ijma", "qiyas", "ulama", "mufti", "fatwa", "madrasah", "masjid", "minbar", "mihrab",
+                "takbir", "tasbih", "taqwa", "hijrah", "sirah", "risalah", "fard", "sunnah", "mu’akkadah", "muakkadah", "makruh", "bid’ah", "bidah",
+                "kaaba", "imam", "caliph", "khutbah", "umrah", "sadaqah", "niyyah", "shura", "tafsir", "tajweed",
+                "mu’min", "munafiq", "mushrik", "mu’adhin", "kafir", "bay'ah", "barzakh", "isra", "mi'raj", "miraj", "bismillah", "kafir",
+                "alhamdulillah", "subhanallah", "astaghfirullah", "inshaallah", "mashallah", "takwa", "salam", "ghusl", "adhan", "iqamah",
+                "jilbab", "hijab", "niqaab", "sunnat", "hadith", "qudsi", "ashura", "ramadan", "laylat", "al-qadr", "arafah", "zamzam", "alqadr",
+                "maqam", "ibrahim", "rakah", "tahajjud", "tarawih", "iftar", "suhoor", "rizq", "khushoo", "sabir", "shukr",
+                "ahmad", "aibak", "akbar", "ali", "aluddin", "aurangzeb", "bahadur", "balban", "babur", "bin", "durrani", "firuz", "ghazi", "ghazni",
+                "ghiyasuddin", "hyder", "ibrahim", "iltutmish", "jahan", "jalaluddin", "jahangir", "khilji", "mahmud", "muhammad", "nasiruddin",
+                "nadir", "of", "qasim", "razia", "shah", "sher", "shah", "sikandar", "sultana", "suri", "tipu", "tughlaq", "timur", "zafar", "zain-ul-abidin", "gaza", "palestine",
+
                 // Indian abusive and suspicious words
                 "bhosdi", "bhosdike", "chutiya", "chutiye", "lund", "gaand", "gandu", "madarchod", "behnchod",
                 "bsdk", "mc", "bc", "randi", "chod", "chudai", "suar", "kutte", "harami", "nalayak",
                 "kutta kamina", "sale", "kamina", "jhatu", "jhant", "gand marna", "gand faad", "chinal",
                 "lulli", "loda", "bhen ke lode", "maa ke lode", "chodna", "jaat", "chamar", "bhangi", "neech",
                 "hijra", "mehnat ki aulad", "launda", "chhakka"
+
         );
 
         forbiddenKeywords.addAll(forbiddenList);
