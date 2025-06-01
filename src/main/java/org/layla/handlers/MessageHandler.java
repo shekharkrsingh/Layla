@@ -39,6 +39,8 @@ public class MessageHandler {
         }
 
         String text=message.getText();
+        String log="PersonName: "+message.getChat().getFirstName()+" UserName: @"+message.getChat().getUserName()+" message: "+message.getText();
+        System.out.println(log);
         if (message.hasText() && (text.toLowerCase().contains("layla") || text.toLowerCase().contains("@"+responseHandler.getBotUsername()) || (message.getChat().getType().equals("private") && message.getReplyToMessage()== null))) {
             handleLaylaResponse(message);
         }
@@ -109,6 +111,8 @@ public class MessageHandler {
                     if (response != null && !response.trim().isEmpty()) {
                         try {
                             responseHandler.sendResponse(message.getChatId(), response);
+                            String laylaReply="Layla-->"+"[(Replied to: "+ message.getChat().getFirstName()+")] "+response;
+                            System.out.println(laylaReply);
                         } catch (TelegramApiException e) {
                             System.err.println("Failed to send Layla response: " + e.getMessage());
                         }
