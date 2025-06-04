@@ -16,7 +16,7 @@ public class KeepAliveScheduler {
     // Load the URL from an environment variable
     private static final String SERVER_URL = System.getenv("SERVER_URL");
 
-    @Scheduled(fixedRate = 480000) // every 4 minutes
+    @Scheduled(fixedRate = 600000) // every 10 minutes
     public void pingServer() {
         if (SERVER_URL == null || SERVER_URL.isEmpty()) {
             logger.warn("KEEP_ALIVE_URL environment variable not set. Skipping ping.");
